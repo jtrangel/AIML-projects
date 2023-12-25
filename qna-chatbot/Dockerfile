@@ -13,7 +13,8 @@ COPY download_model.sh .
 RUN bash download_model.sh
 
 # copies the app files to the docker image
-COPY app/ app/
+COPY main.py app/
+COPY classes.py app/
 
 # runs our application at the start of the docker image
 CMD ["python", "app/main.py"]

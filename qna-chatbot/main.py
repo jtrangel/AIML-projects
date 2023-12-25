@@ -1,9 +1,9 @@
 import uvicorn
+from classes import QASearcher
 from fastapi import FastAPI, Request
 
 qa_search = QASearcher()
 app = FastAPI()
-
 
 @app.post("/set_context")
 async def set_context(data: Request):
@@ -15,11 +15,11 @@ async def set_context(data: Request):
         and 'answers' (`list` of `str`)
     """
     data = await data.json()
-
     qa_search.set_context_qa(
         data['questions'],
         data['answers']
     )
+
     return {"message": "Search context set"}
 
 

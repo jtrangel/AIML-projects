@@ -1,8 +1,9 @@
 import json
+import requests
 from classes import QAEmbedder, QASearcher
 
 emb = QAEmbedder()
-search = QASearcher
+search = QASearcher()
 
 # Read the context data
 with open("train-v2.0.json", 'r') as f:
@@ -28,4 +29,18 @@ new_embedding = emb.get_embeddings([new_question])
 
 # squared Euclidean distance between sample questions and new_question
 print(((embeddings - new_embedding) ** 2).sum(axis=1))
+
+new_questions = [
+    'How many teams compete in the Premier League ?',
+    'When does the Premier League starts and finishes ?',
+    'Highest number of goals in the Premier League ?',
+]
+
+search.set_context_qa(
+  questions,
+  answers
+)
+response = search.get_answers(questions=new_questions)
+
+print(json.dumps(response, indent=4, sort_keys=True))
 
