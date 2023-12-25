@@ -12,4 +12,11 @@ Project basis documentation: https://towardsdatascience.com/build-a-q-a-app-with
 3. For any python packages, add `python -m` for pip
     - i.e. `python -m pip install transformers[torch]`
 4. Rust and Visual Studio is a prerequisite for transformers. Install via `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`. I believe this is for metadata (`*.toml`) files
-5. Encountered a subprocess issue with building wheel for sentencepiece
+5. Encountered a subprocess issue with building wheel for sentencepiece. Solution was to create a conda venv with python
+version of 3.8.12. 
+```bash
+conda create -n py38 python=3.8.12
+
+source activate py38
+```
+6. 
