@@ -1,9 +1,14 @@
 Project basis documentation: https://towardsdatascience.com/build-a-q-a-app-with-pytorch-cb599480e29
 
 ### Directory includes:
-- main.py script
-- training data json
-- huggingface model downloader shell script
+- `app/main.py` script - FastAPI app for setting up API endpoints
+- `app/classes.py` script - Define classes for taking context, processing input data into vector
+   embeddings, and resolving an answer for a query.
+- `app/test.py` - for testing local functionality of classes/chatbot
+- `app/test_container.py` - for testing containerized API functionality of chatbot
+- `Dockerfile` - for building Docker image
+- `train-v2.0.json` - Stanford Question Answering Dataset 2.0
+- `download_model.sh` - huggingface model downloader shell script
 
 ### Notable changes:
 
@@ -19,4 +24,9 @@ conda create -n py38 python=3.8.12
 
 source activate py38
 ```
-6. 
+
+### Running app via docker and fastapi def
+```commandline
+docker build . -t qamodel &&\
+  docker run -p 8000:8000 qamodel
+```

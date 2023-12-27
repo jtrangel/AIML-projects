@@ -4,7 +4,7 @@ FROM python:3.8.12-slim-buster
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends wget &&\
     rm -rf /var/lib/apt/lists/* &&\
-    pip install --no-cache-dir transformers[torch] uvicorn fastapi
+    pip install transformers[torch] uvicorn fastapi
 
 # adds the script defining the QA model to docker
 COPY download_model.sh .
@@ -13,8 +13,7 @@ COPY download_model.sh .
 RUN bash download_model.sh
 
 # copies the app files to the docker image
-COPY main.py app/
-COPY classes.py app/
+COPY app/ app/
 
 # runs our application at the start of the docker image
 CMD ["python", "app/main.py"]
