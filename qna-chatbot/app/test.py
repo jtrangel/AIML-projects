@@ -1,12 +1,11 @@
 import json
-import requests
 from classes import QAEmbedder, QASearcher
 
 emb = QAEmbedder()
 search = QASearcher()
 
 # Read the context data
-with open("train-v2.0.json", 'r') as f:
+with open("../train-v2.0.json", 'r') as f:
   data = json.load(f)
 
 # Extract the QnA context/facts

@@ -1,4 +1,3 @@
-import json
 import torch
 from transformers import AutoModel, AutoTokenizer
 
@@ -10,7 +9,7 @@ from transformers.modeling_outputs import BaseModelOutputWithPoolingAndCrossAtte
 from torch import Tensor
 
 class QAEmbedder:
-    def __init__(self, model_name="paraphrase-MiniLM-L6-v2"):
+    def __init__(self, model_name:str = "paraphrase-MiniLM-L6-v2"):
         """
         QnA embedding model.
 
@@ -22,7 +21,7 @@ class QAEmbedder:
         self.model = None
         self.tokenizer = None
         self.model_name = model_name
-        self.set_model(model_name)
+        self.set_model()
 
     def get_model(self, model_name: str) -> Tuple[BertModel, BertTokenizerFast]:
         """
@@ -34,17 +33,14 @@ class QAEmbedder:
         :return: Model and Tokenizer objects from the directory
         :rtype: Tuple[BertModel, BertTokenizerFast]
         """
-        model = AutoModel.from_pretrained(model_name)
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModel.from_pretrained("../" + model_name)
+        tokenizer = AutoTokenizer.from_pretrained("../" + model_name)
         return model, tokenizer
 
-    def set_model(self, model_name: str) -> None:
+    def set_model(self) -> None:
         """
         Instantiates a general tokenizer and model for the class using the 'self.get_model'
         method.
-
-        :param model_name: model name/directory
-        :type model_name: str
         """
         self.model, self.tokenizer = self.get_model(self.model_name)
 
@@ -81,12 +77,12 @@ class QAEmbedder:
         Mean Pooling - Take attention mask into account for correct averaging
         source: https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2
 
-        :param model_output:
-        :type model_output:
-        :param attention_mask:
-        :type attention_mask:
+        :param model_output: ~
+        :type model_output: BaseModelOutputWithPoolingAndCrossAttentions
+        :param attention_mask: ~
+        :type attention_mask: Tensor
 
-        :return:
+        :return: ~
         :rtype: Tensor
         """
         token_embeddings = model_output[0]
@@ -109,14 +105,14 @@ class QAEmbedder:
                        questions: List,
                        batch: int = 32) -> Tensor:
         """
-
-        :param questions:
-        :type questions:
-        :param batch:
+        Function for converting questions into Tensors (vector embeddings)
+        :param questions: Different questions
+        :type questions: List
+        :param batch: ~
         :type batch: int
 
-        :return:
-        :rtype:
+        :return: Embeddings for each input question
+        :rtype: Tensor
         """
         question_embeddings = []
         for i in range(0, len(questions), batch):
@@ -134,59 +130,60 @@ class QAEmbedder:
         question_embeddings = torch.cat(question_embeddings, dim=0)
         return question_embeddings
 
-
 class QASearcher:
-    def __init__(self, model_name="paraphrase-MiniLM-L6-v2"):
+    def __init__(self, model_name: str = "paraphrase-MiniLM-L6-v2"):
         """
         Defines a QA Search model. This is, given a new question it searches
         the most similar questions in a set 'context' and returns both the best
         question and associated answer.
 
-        Args:
-          model_name (`str`): Directory containing the necessary tokenizer
-            and model files.
+        :param model_name: model name/directory of interest
+        :type model_name: str
         """
         self.answers = None
         self.questions = None
         self.question_embeddings = None
         self.embedder = QAEmbedder(model_name=model_name)
 
-    def set_context_qa(self, questions, answers):
+    def set_context_qa(self, questions: List[str], answers: List[str]) -> None:
         """
-        Sets the QA context to be used during search.
+        Sets the QnA context to be used during search.
 
-        Args:
-          questions (`list` of `str`):  List of strings defining the questions to be embedded
-          answers (`list` of `str`): Best answer for each question in 'questions'
+        :param questions: List of strings with questions
+        :type questions: List[str]
+        :param answers: List of corresponding BEST answers for each question
+        :type answers: List[str]
         """
         self.answers = answers
         self.questions = questions
         self.question_embeddings = self.get_q_embeddings(questions)
 
-    def get_q_embeddings(self, questions):
+    def get_q_embeddings(self, questions: List[str]) -> Tensor:
         """
         Gets the embeddings for the questions in 'context'.
 
-        Args:
-          questions (`list` of `str`):  List of strings defining the questions to be embedded
+        :param questions: List of strings with questions
+        :type questions: List[str]
 
-        Returns:
-          The embedding vectors.
+        :return: Embeddings for each question
+        :rtype: Tensor
         """
         question_embeddings = self.embedder.get_embeddings(questions)
         question_embeddings = torch.nn.functional.normalize(question_embeddings, p=2, dim=1)
         return question_embeddings.transpose(0, 1)
 
-    def cosine_similarity(self, questions, batch=32):
+    def cosine_similarity(self, questions: List[str], batch: int = 32) -> Tensor:
         """
         Gets the cosine similarity between the new questions and the 'context' questions.
+        This is done to determine how close a given sentence is to another.
 
-        Args:
-          questions (`list` of `str`):  List of strings defining the questions to be embedded
-          batch (`int`): Performs the embedding job 'batch' questions at a time
+        :param questions: List of strings with questions
+        :type questions: List[str]
+        :param batch: Performs the embedding job 'batch' questions at a time
+        :type batch: int
 
-        Returns:
-          The cosine similarity
+        :return: Cosine similarity tensor
+        :rtype: Tensor
         """
         question_embeddings = self.embedder.get_embeddings(questions, batch=batch)
         question_embeddings = torch.nn.functional.normalize(question_embeddings, p=2, dim=1)
@@ -195,17 +192,18 @@ class QASearcher:
 
         return cosine_sim
 
-    def get_answers(self, questions, batch=32):
+    def get_answers(self, questions: List[str], batch: int = 32) -> List[Dict]:
         """
         Gets the best answers in the stored 'context' for the given new 'questions'.
 
-        Args:
-          questions (`list` of `str`):  List of strings defining the questions to be embedded
-          batch (`int`): Performs the embedding job 'batch' questions at a time
+        :param questions: List of strings with questions
+        :type questions: List[str]
+        :param batch: Performs the embedding job 'batch' questions at a time
+        :type batch: int
 
-        Returns:
-          A `list` of `dict`'s containing the original question ('orig_q'), the most similar
-          question in the context ('best_q') and the associated answer ('best_a').
+        :return: a `list` of `dict`'s containing the original question ('orig_q'), the most similar
+            question in the context ('best_q') and the associated answer ('best_a').
+        :rtype:List[Dict]
         """
         similarity = self.cosine_similarity(questions, batch=batch)
 

@@ -40,3 +40,8 @@ async def get_answer(data: Request):
 
     response = qa_search.get_answers(data['questions'], batch=1)
     return response
+
+# initialises the QA model and starts the uvicorn app
+if __name__ == "__main__":
+  qa_search = QASearcher()
+  uvicorn.run(app, port=8000)
