@@ -3,8 +3,8 @@ import assemblyai as aai
 aai.settings.api_key = "d3f47ef7dbd941b993dee44596d0573b"
 transcriber = aai.Transcriber()
 
-transcript = transcriber.transcribe("https://storage.googleapis.com/aai-web-samples/news.mp4")
-# transcript = transcriber.transcribe("./my-local-audio-file.wav")
+# transcript = transcriber.transcribe("https://storage.googleapis.com/aai-web-samples/news.mp4")
+transcript = transcriber.transcribe("./Prevention and Control.m4a")
 
 print(transcript.text)
 
