@@ -10,7 +10,7 @@ Project basis documentation: https://towardsdatascience.com/build-a-q-a-app-with
 - `train-v2.0.json` - Stanford Question Answering Dataset 2.0
 - `download_model.sh` - huggingface model downloader shell script
 
-### Notable changes:
+### Notes:
 
 1. Use `sh download_model.sh` instead of `bash download_model.sh`
 2. Make sure to have `wget.exe` in your bash binaries (`./usr/bin`) directory. Despite similarity to `curl`, functionality differs with parameters
