@@ -5,3 +5,17 @@
 
 ### Notes:
 
+- Found three ways of making use of a pre-trained BART model for text summarization.
+  - via pipeline
+  - via tokenizer (requires TF and/or PyTorch)
+  - via ktrain (though I opted not to use this as it was redundant)
+- Several BART summarization models are usable: https://huggingface.co/models?sort=likes&search=bart-large
+  - For variety I've chosen two that seem promising:
+    - `facebook/bart-large-cnn-samsum`
+    - `facebook/bart-large-cnn`
+- Streamlit app runnable locally using `streamlit run app.py`
+  ![img.png](img.png)
+  ![img_1.png](img_1.png)
+- For deployment:
+https://cloud.google.com/compute/docs/containers/deploying-containers
+
