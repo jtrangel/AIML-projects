@@ -7,7 +7,6 @@ MODEL_NAME="paraphrase-MiniLM-L6-v2"
 # downloads the qa model. To make this image more general one can use wget
 # with the "-i requires.txt" argument to download the necessary files defined
 # in "requires.txt".
-rmdir ${MODEL_NAME}
 mkdir ${MODEL_NAME} &&\
     wget --directory-prefix=${MODEL_NAME} ${MODEL_DIR}/vocab.txt &&\
     wget --directory-prefix=${MODEL_NAME} ${MODEL_DIR}/tokenizer_config.json &&\
