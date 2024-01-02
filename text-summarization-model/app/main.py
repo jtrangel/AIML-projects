@@ -1,5 +1,5 @@
 from transformers import pipeline, BartForConditionalGeneration, BartTokenizer, BartConfig
-from ktrain.text.summarization import TransformerSummarizer
+# from ktrain.text.summarization import TransformerSummarizer
 
 class summarizer_bart():
     def __init__(self, text: str, min_length: int, max_length: int):
