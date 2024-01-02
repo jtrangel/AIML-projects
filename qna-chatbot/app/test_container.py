@@ -42,8 +42,8 @@ def test(url: str) -> None:
         print('\n'.join(["{} : {}".format(k, v) for k, v in d.items()])+'\n')
 
 if __name__ == '__main__':
-    # Test local server
-    # test("http://127.0.0.1:8000")
+    # Test local server (localhost:8000 or 127.0.0.1:8000)
+    test("http://127.0.0.1:8000")
 
     # Test GCP VM
-    test("http://34.16.173.104:8000")
+    # test("http://34.16.173.104:8000")

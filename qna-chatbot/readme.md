@@ -30,3 +30,10 @@ source activate py38
 docker build . -t qamodel &&\
   docker run -p 8000:8000 qamodel
 ```
+
+### Test the dockerized app
+
+```commandline
+cd app
+python test_container.py
+```
